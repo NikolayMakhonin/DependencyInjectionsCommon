@@ -45,6 +45,7 @@ public class FabricModule {
         Fabric instance = Fabric.with(context, new Crashlytics.Builder().core(core).build());
 
         if (enabled) {
+            // Send to Fabric all the errors from the log
             Log.LogEvent().add(logEventListener);
         }
         return instance;
@@ -65,24 +66,21 @@ public class FabricModule {
                     if (logInfo.exception instanceof ConnectException
                         || logInfo.exception instanceof UnknownHostException)
                     {
-                        return true; //отсутствие доступа к интернет - не ошибка
+                        // Do not have access to the Internet, not an error of the program
+                        return true;
                     }
 
                     if (logInfo.exception != null) {
                         Crashlytics.setString("tag", logInfo.tag);
-                        //Crashlytics.setString("ApplicationMode", _isBackgroundProcess ? "Background" : "Foreground");
                         Crashlytics.setString("message", logInfo.message);
                         Crashlytics.setInt("priority", logInfo.priority);
-                        //Crashlytics.setDouble("Application duration (sec)", getApplicationRunnedDuration().TotalSeconds());
                         Crashlytics.logException(logInfo.exception);
                         if (logInfo.terminateApplication) {
+                            // If fatal error, send error to fabric in new thread and close application
                             Thread thread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
                                     try {
-                                        //if (!_isBackgroundProcess && !_disposed) {
-                                        //    _activity.moveTaskToBack(true);
-                                        //}
                                         Crashlytics.getInstance().core.getFabric().getExecutorService()
                                             .awaitTermination(60, TimeUnit.SECONDS);
                                     } catch (InterruptedException e1) {
@@ -95,13 +93,10 @@ public class FabricModule {
                             thread.start();
                         }
                     } else {
-                        //Crashlytics.setDouble("Application duration (sec)", getApplicationRunnedDuration().TotalSeconds());
                         Crashlytics.log(logInfo.priority, logInfo.tag, logInfo.message);
                     }
 
-                    //                _googleAnalyticsTracker.send(new HitBuilders.EventBuilder().setCategory("Logger").setAction("LogEvent")
-                    //                        .setLabel(LogPriority.toString(logInfo.priority)).build());
-
+                    // Errors counter
                     Answers.getInstance().logCustom(
                         new CustomEvent("LogEvent").putCustomAttribute("priority", LogPriority.toString(logInfo.priority)));
 

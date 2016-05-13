@@ -11,7 +11,8 @@ import io.fabric.sdk.android.Fabric;
 @Component(modules = { ServiceModuleBase.class })
 @PerService
 public interface ServiceComponentBase {
-    Context getContext();
+    Context getApplicationContext();
+    /** Run it in application onCreate if you want initialize Fabric */
     Fabric initFabric();
 }
 

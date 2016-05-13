@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 
 import mika.controls.views.SplashScreenView;
 
+/** Overlay window using as loading screen during start application */
 public class SplashWindowManager {
 
     private Context _context;
@@ -13,10 +14,11 @@ public class SplashWindowManager {
     private Dialog _splashWindow;
 
     public SplashWindowManager(Context context, LayoutInflater layoutInflater) {
-        _context = context;
+        _context = context.getApplicationContext();
         _layoutInflater = layoutInflater;
     }
 
+    /** Show hidden or create new and show */
     public void show() {
         if (_splashWindow == null) {
             _splashWindow = SplashScreenView.createSplashWindow(_context, _layoutInflater);
@@ -24,17 +26,19 @@ public class SplashWindowManager {
         _splashWindow.show();
     }
 
+    /** Set invisible */
     public void hide() {
         if (_splashWindow != null) {
             _splashWindow.hide();
-            _splashWindow = null;
         }
     }
 
+    /** Close splash screen and releases the used memory */
     public void dismiss() {
         if (_splashWindow != null) {
             _splashWindow.dismiss();
             _splashWindow = null;
+            // Splash window could contain the big picture, it is better at once to remove from memory
             System.gc();
         }
     }

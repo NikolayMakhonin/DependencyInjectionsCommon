@@ -15,7 +15,8 @@ import dagger.Component;
 @PerApplication
 public interface AppComponentBase extends ServiceComponentBase {
     SplashWindowManager getSplashWindowManager();
-    /** Запускается из SplashScreenActivity */
+
+    /** Main activity class, running from SplashScreenActivity */
     @Named("StartActivityClass")
     Class<? extends Activity> getStartActivityClass();
 }

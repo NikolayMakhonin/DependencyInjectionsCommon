@@ -13,16 +13,17 @@ import mika.utils.ControlUtils;
 @Module(includes = { FabricModule.class })
 public class ServiceModuleBase {
 
-    private Context _appContext;
+    // You can not store a global link to other contexts, in order to avoid memory leaks
+    private Context _applicationContext;
 
-    public ServiceModuleBase(@NonNull Context appContext) {
-        _appContext = ControlUtils.GetApplicationContext(appContext);
+    public ServiceModuleBase(@NonNull Context anyContext) {
+        _applicationContext = anyContext.getApplicationContext();
     }
 
     @Provides
     @PerService
-    public Context getAppContext() {
-        return _appContext;
+    public Context getApplicationContext() {
+        return _applicationContext;
     }
 
     @Provides
