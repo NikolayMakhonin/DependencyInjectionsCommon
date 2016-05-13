@@ -1,0 +1,12 @@
+package com.github.nikolaymakhonin.dependency_injections_common.scopes;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Scope;
+
+@Scope
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PerApplicationBase {
+}
+
